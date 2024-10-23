@@ -7,6 +7,26 @@ st.set_page_config(
     page_title="QR code generator",
     layout="wide",
 )
+st.markdown("""
+<style>
+    .reportview-contaner {
+        margin-top: -2em;
+    }
+    #MainMenu {
+        visibility: hidden;
+    }
+    .stAppDeployButton{
+        display: none;
+    }
+    footer {
+        visibility: hidden;
+    }
+    #stDecoration {
+        display: none;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 min_version_number = st.sidebar.number_input(
     'Mininum version number',
     min_value=1,
