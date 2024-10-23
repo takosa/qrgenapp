@@ -7,6 +7,7 @@ name = "pypi"
 qrcode = "*"
 streamlit = "*"
 pillow = "*"
+matplotlib = "*"
 
 [dev-packages]
 
