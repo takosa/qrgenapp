@@ -1,14 +1,16 @@
 FROM python:3.12
 
-RUN pip3 install pipenv
 
 WORKDIR /app
 
 EXPOSE 8501
 
-COPY Pipfile.lock .
-COPY app.py .
 
-RUN pipenv sync
+COPY app.py .
+COPY requirements.txt .
+
+RUN pip3 install -r requirements.txt
+RUN apt update && apt install -y ttf-mscorefonts-installer
+RUN fc-cache -f
 
 CMD streamlit run app.py
