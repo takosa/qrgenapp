@@ -10,7 +10,6 @@ COPY app.py .
 COPY requirements.txt .
 
 RUN pip3 install -r requirements.txt
-RUN apt update && apt install -y ttf-mscorefonts-installer
-RUN fc-cache -f
+RUN apt update && apt install -y fonts-noto-cjk
 
-CMD streamlit run app.py
+CMD ["streamlit", "run", "app.py"]

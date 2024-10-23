@@ -2,30 +2,8 @@ import qrcode
 from PIL import Image, ImageDraw, ImageFont
 import io
 import streamlit as st
+from matplotlib import font_manager
 
-st.set_page_config(
-    page_title="QR code generator",
-    layout="wide",
-)
-st.markdown("""
-<style>
-    .reportview-contaner {
-        margin-top: -2em;
-    }
-    #MainMenu {
-        visibility: hidden;
-    }
-    .stAppDeployButton{
-        display: none;
-    }
-    footer {
-        visibility: hidden;
-    }
-    #stDecoration {
-        display: none;
-    }
-</style>
-""", unsafe_allow_html=True)
 
 min_version_number = st.sidebar.number_input(
     'Mininum version number',
@@ -130,7 +108,7 @@ for chunk in (output_data_list[i:i+chunk_size] for i in range(0, len(output_data
     w, h = chunk[0][1].size
     dst = Image.new('RGB', (w * n_cols, h * n_rows), "#FFFFFF")
     d = ImageDraw.Draw(dst)
-    font = ImageFont.truetype("Arial Unicode.ttf", 50)
+    font = ImageFont.truetype("Noto Sans CJK JP", 50)
     for j, (text_to_print, img) in enumerate(chunk):
         x, y = (j % n_cols) * w, (j // n_cols) * h
         dst.paste(img, (x, y))
@@ -153,7 +131,6 @@ with col2:
     # for debugging information
     #st.write(f"{img.box_size * img.width / qr_size_cm} pixels / cm" )
     #st.write(f"{img.box_size * img.width / qr_size_cm * 2.54} pixels / inch" )
-    #st.write(f"{dst.size[0] / (img.box_size * img.width / qr_size_cm):.2f}cm x {dst.size[1] / (img.box_size * img.width / qr_size_cm):.2f}cm" )
     pdf_buf = io.BytesIO()
     for img in images_to_print:
         buf = io.BytesIO()
@@ -162,9 +139,11 @@ with col2:
 
         img.save(pdf_buf, format="PDF", resolution=resolution)
 
-col1.download_button(
-    label="Download PDF",
-    data=pdf_buf,
-    file_name="out.pdf",
-    mime="application/pdf",
-)
+if len(images_to_print) > 0:
+    st.write(f"pdf size: {dst.size[0] / (img.box_size * img.width / qr_size_cm):.2f}cm x {dst.size[1] / (img.box_size * img.width / qr_size_cm):.2f}cm" )
+    col1.download_button(
+        label="Download PDF",
+        data=pdf_buf,
+        file_name="out.pdf",
+        mime="application/pdf",
+    )
