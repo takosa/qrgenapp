@@ -24,7 +24,7 @@ n_rows = st.sidebar.number_input(
     value=3,
 )
 n_cols = st.sidebar.number_input(
-    'layout number of columns',
+    'Layout number of columns',
     min_value=1,
     max_value=5,
     value=2,
@@ -88,9 +88,9 @@ output_data_list = []
 for order_number, text_to_coded, img in qr_images:
 
     if has_to_include_order_number:
-        text_to_print = f"{order_number+1} {text_to_coded}"
+        text_to_print = f"{order_number+1} [{text_to_coded}]"
     else:
-        text_to_print = f"{text_to_coded}"
+        text_to_print = f"[{text_to_coded}]"
 
     if replicate_number == 1:
         output_data_list.append( (text_to_print, img) )
@@ -108,7 +108,11 @@ for chunk in (output_data_list[i:i+chunk_size] for i in range(0, len(output_data
     w, h = chunk[0][1].size
     dst = Image.new('RGB', (w * n_cols, h * n_rows), "#FFFFFF")
     d = ImageDraw.Draw(dst)
-    font = ImageFont.truetype("Noto Sans CJK JP", 50)
+    try:
+        font = ImageFont.truetype("NotoSansCJK-Regular.ttc", size=50)
+    except OSError:
+        font = ImageFont.load_default(size=50)
+        st.write(font_manager.findSystemFonts())
     for j, (text_to_print, img) in enumerate(chunk):
         x, y = (j % n_cols) * w, (j // n_cols) * h
         dst.paste(img, (x, y))
@@ -117,11 +121,11 @@ for chunk in (output_data_list[i:i+chunk_size] for i in range(0, len(output_data
     for i in range(n_cols):
         if i == 0:
             continue
-        d.line(((w*i, 0), (w*i, dst.size[1])), "gray",  5)
+        d.line(((w*i, 0), (w*i, dst.size[1])), fill_color,  5)
     for i in range(n_rows):
         if i == 0:
             continue
-        d.line(((0, h*i), (dst.size[0], h*i)), "gray", 5)
+        d.line(((0, h*i), (dst.size[0], h*i)), fill_color, 5)
 
     images_to_print.append(dst)
 
@@ -140,7 +144,9 @@ with col2:
         img.save(pdf_buf, format="PDF", resolution=resolution)
 
 if len(images_to_print) > 0:
-    st.write(f"pdf size: {dst.size[0] / (img.box_size * img.width / qr_size_cm):.2f}cm x {dst.size[1] / (img.box_size * img.width / qr_size_cm):.2f}cm" )
+    img = images_to_print[0]
+
+    col1.write(f"pdf size: {img.size[0] / resolution * 2.54:.2f}cm x {img.size[1] / resolution * 2.54:.2f}cm" )
     col1.download_button(
         label="Download PDF",
         data=pdf_buf,

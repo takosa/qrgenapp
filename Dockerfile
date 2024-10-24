@@ -1,15 +1,17 @@
 FROM python:3.12
 
+EXPOSE 8501
+
+RUN apt update && apt install -y fonts-noto-cjk
 
 WORKDIR /app
 
-EXPOSE 8501
-
-
-COPY app.py .
 COPY requirements.txt .
 
 RUN pip3 install -r requirements.txt
-RUN apt update && apt install -y fonts-noto-cjk
+
+COPY app.py .
+
+COPY .streamlit .streamlit
 
 CMD ["streamlit", "run", "app.py"]
