@@ -112,7 +112,7 @@ for chunk in (output_data_list[i:i+chunk_size] for i in range(0, len(output_data
         font = ImageFont.truetype("NotoSansCJK-Regular.ttc", size=50)
     except OSError:
         font = ImageFont.load_default(size=50)
-        st.write(font_manager.findSystemFonts())
+        #st.write(font_manager.findSystemFonts())
     for j, (text_to_print, img) in enumerate(chunk):
         x, y = (j % n_cols) * w, (j // n_cols) * h
         dst.paste(img, (x, y))
