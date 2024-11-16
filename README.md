@@ -3,6 +3,10 @@
 
 simple QR code generator using python-streamlit.
 
+## Quick Start
+
+https://qrgenapp-kgbffbbc4ezd4h7rdny7yf.streamlit.app/
+
 ## Installation
 
 ### Python
